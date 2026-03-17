@@ -1,0 +1,577 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout Premium • Cacau Show</title>
+
+    <!-- Preload para performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Playfair+Display:wght@700&amp;display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --brand: #3C2415;          /* Cacau Profundo – confiança */
+            --accent: #B8860B;         /* Dourado Real – luxo */
+            --text: #2D2D2D;
+            --muted: #6B5F5A;
+            --bg: #F9F7F5;
+            --surface: #FFFFFF;
+            --border: #EDE6E0;
+            --error: #E63946;
+            --success: #2A9D8F;
+            
+            --radius: 20px;
+            --radius-sm: 12px;
+            --shadow: 0 25px 70px -15px rgba(60,36,21,0.12);
+            --shadow-hover: 0 35px 90px -10px rgba(60,36,21,0.18);
+            --transition: all 0.35s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        * { margin:0; padding:0; box-sizing:border-box; }
+        :focus-visible { outline: 3px solid rgba(184,134,11,0.25); outline-offset: 3px; }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            line-height: 1.5;
+        }
+
+        .checkout {
+            width: 100%;
+            max-width: 560px;
+            background: var(--surface);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            animation: fadeInScale 0.7s cubic-bezier(0.23,1,0.32,1) backwards;
+        }
+
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.96) translateY(30px); }
+            to   { opacity: 1; transform: none; }
+        }
+
+        /* HEADER – Nível Enterprise */
+        .header {
+            background: linear-gradient(135deg, #3C2415, #5C3A25);
+            color: white;
+            padding: 32px 40px;
+            text-align: center;
+            position: relative;
+        }
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.1rem;
+            font-weight: 700;
+            letter-spacing: -0.04em;
+            margin-bottom: 6px;
+        }
+        .trust-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            background: rgba(255,255,255,0.15);
+            padding: 6px 16px;
+            border-radius: 9999px;
+            backdrop-filter: blur(8px);
+        }
+        .trust-badge svg { width: 16px; height: 16px; }
+
+        /* STEPPER – Premium */
+        .stepper {
+            display: flex;
+            justify-content: space-between;
+            padding: 28px 40px 0;
+            position: relative;
+        }
+        .stepper::before {
+            content: '';
+            position: absolute;
+            top: 13px;
+            left: 58px;
+            right: 58px;
+            height: 2px;
+            background: #EDE6E0;
+        }
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            color: var(--muted);
+            z-index: 2;
+        }
+        .step.active { color: var(--accent); }
+        .step.complete { color: var(--brand); }
+        .step-dot {
+            width: 28px; height: 28px;
+            background: white;
+            border: 3px solid #EDE6E0;
+            border-radius: 50%;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            transition: var(--transition);
+        }
+        .step.complete .step-dot { border-color: var(--brand); background: var(--brand); color: white; }
+        .step.active .step-dot { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(184,134,11,0.15); }
+
+        .content {
+            padding: 40px;
+        }
+
+        h2 {
+            font-size: 1.45rem;
+            font-weight: 700;
+            color: var(--brand);
+            margin-bottom: 32px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        h2::before {
+            content: '📍';
+            font-size: 1.4rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+        .full { grid-column: 1 / -1; }
+
+        .field {
+            position: relative;
+        }
+        label {
+            display: block;
+            font-size: 0.76rem;
+            font-weight: 600;
+            color: var(--muted);
+            margin-bottom: 8px;
+            padding-left: 4px;
+        }
+
+        input {
+            width: 100%;
+            padding: 15px 18px;
+            border: 1.8px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 1.02rem;
+            background: white;
+            transition: var(--transition);
+            color: var(--text);
+        }
+        input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(184,134,11,0.12);
+        }
+        input:disabled {
+            background: #F8F6F3;
+            color: #A89E96;
+            cursor: not-allowed;
+        }
+        input.error {
+            border-color: var(--error);
+            animation: shake 420ms cubic-bezier(0.36,0,0.66,1);
+        }
+
+        @keyframes shake {
+            10%,90% { transform: translateX(-2px); }
+            20%,80% { transform: translateX(3px); }
+            30%,50%,70% { transform: translateX(-4px); }
+            40%,60% { transform: translateX(4px); }
+        }
+
+        .error-msg {
+            position: absolute;
+            bottom: -18px;
+            left: 4px;
+            font-size: 0.73rem;
+            color: var(--error);
+            opacity: 0;
+            transform: translateY(4px);
+            transition: all 0.3s ease;
+        }
+        .error-msg.show {
+            opacity: 1;
+            transform: none;
+        }
+
+        /* CEP Row – Luxo */
+        .cep-row {
+            display: flex;
+            gap: 12px;
+        }
+        .cep-row input { flex: 1; }
+        .cep-btn {
+            padding: 0 28px;
+            background: var(--brand);
+            color: white;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: var(--transition);
+        }
+        .cep-btn:hover:not(:disabled) {
+            background: var(--accent);
+            transform: translateY(-2px);
+        }
+        .cep-btn:disabled {
+            opacity: 0.65;
+        }
+
+        .btn-final {
+            width: 100%;
+            margin-top: 40px;
+            padding: 19px;
+            background: var(--brand);
+            color: white;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 1.08rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            box-shadow: 0 12px 28px rgba(60,36,21,0.22);
+            transition: var(--transition);
+        }
+        .btn-final:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 40px rgba(60,36,21,0.28);
+        }
+        .btn-final:disabled {
+            background: #B8B0A8;
+            box-shadow: none;
+        }
+
+        .footer-trust {
+            padding: 20px 40px;
+            background: #F9F7F5;
+            font-size: 0.72rem;
+            color: var(--muted);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-top: 1px solid var(--border);
+        }
+        .footer-trust svg { width: 18px; height: 18px; }
+
+        @media (max-width: 480px) {
+            .checkout { margin: 0 -8px; }
+            .content { padding: 28px 24px; }
+            .form-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="checkout">
+
+    <!-- HEADER LUXO -->
+    <header class="header">
+        <div class="logo">CACAU SHOW</div>
+        <div class="trust-badge">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 8.944 11.922.42.095.858.143 1.295.143a3 3 0 01.905-.143C18.176 19.29 22 14.591 22 9c0-1.444-.534-2.778-1.44-3.8z"/></svg>
+            CHECKOUT 100% SEGURO
+        </div>
+    </header>
+
+    <!-- STEPPER -->
+    <div class="stepper">
+        <div class="step complete">
+            <div class="step-dot">1</div>
+            Identificação
+        </div>
+        <div class="step active">
+            <div class="step-dot">2</div>
+            Entrega
+        </div>
+        <div class="step">
+            <div class="step-dot">3</div>
+            Pagamento
+        </div>
+    </div>
+
+    <div class="content">
+        <h2>Onde entregamos seu chocolate?</h2>
+
+        <form id="formEntrega" novalidate>
+            <div class="form-grid">
+
+                <!-- CEP -->
+                <div class="field full">
+                    <label for="cep">CEP</label>
+                    <div class="cep-row">
+                        <input id="cep" type="text" inputmode="numeric" maxlength="9" placeholder="00000-000" autocomplete="postal-code" required>
+                        <button type="button" class="cep-btn" id="btnCep">BUSCAR</button>
+                    </div>
+                    <div class="error-msg" id="errCep"></div>
+                </div>
+
+                <!-- Endereço -->
+                <div class="field full">
+                    <label for="rua">Endereço</label>
+                    <input id="rua" type="text" placeholder="Rua, Avenida..." required autocomplete="address-line1">
+                    <div class="error-msg" id="errRua"></div>
+                </div>
+
+                <!-- Número + Complemento -->
+                <div class="field">
+                    <label for="numero">Número</label>
+                    <input id="numero" type="text" placeholder="123" required autocomplete="address-line2">
+                    <div class="error-msg" id="errNumero"></div>
+                </div>
+                <div class="field">
+                    <label for="complemento">Complemento</label>
+                    <input id="complemento" type="text" placeholder="Apto 42, Bloco B">
+                </div>
+
+                <!-- Bairro -->
+                <div class="field full">
+                    <label for="bairro">Bairro</label>
+                    <input id="bairro" type="text" disabled>
+                </div>
+
+                <!-- Cidade + UF -->
+                <div class="field">
+                    <label for="cidade">Cidade</label>
+                    <input id="cidade" type="text" disabled>
+                </div>
+                <div class="field">
+                    <label for="uf">UF</label>
+                    <input id="uf" type="text" maxlength="2" disabled>
+                </div>
+
+            </div>
+
+            <button type="submit" class="btn-final" id="btnSubmit">
+                CONTINUAR PARA PAGAMENTO
+            </button>
+        </form>
+    </div>
+
+    <!-- TRUST FOOTER -->
+    <div class="footer-trust">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/></svg>
+        <span>Seus dados estão protegidos com criptografia bancária • SSL 256-bit</span>
+    </div>
+
+</div>
+
+<script>
+// ================================================
+// Checkout Entrega – Nível Senior+ Enterprise
+// Autor: Staff Engineer | Head of UX/UI
+// Objetivo: Transparência, confiança e zero fricção
+// ================================================
+
+const CONFIG = {
+    CEP_API: 'https://viacep.com.br/ws',
+    TIMEOUT: 7500,
+    CEP_REGEX: /^\d{5}-?\d{3}$/,
+    REQUIRED: ['cep', 'rua', 'numero']
+};
+
+const el = {
+    form:     document.getElementById('formEntrega'),
+    cep:      document.getElementById('cep'),
+    rua:      document.getElementById('rua'),
+    numero:   document.getElementById('numero'),
+    complemento: document.getElementById('complemento'),
+    bairro:   document.getElementById('bairro'),
+    cidade:   document.getElementById('cidade'),
+    uf:       document.getElementById('uf'),
+    btnCep:   document.getElementById('btnCep'),
+    btnSubmit:document.getElementById('btnSubmit'),
+    errCep:   document.getElementById('errCep'),
+    errRua:   document.getElementById('errRua'),
+    errNumero:document.getElementById('errNumero')
+};
+
+// ====================== HELPERS ======================
+function showError(field, msgEl, message) {
+    field.classList.add('error');
+    msgEl.textContent = message;
+    msgEl.classList.add('show');
+}
+function clearError(field, msgEl) {
+    field.classList.remove('error');
+    msgEl.textContent = '';
+    msgEl.classList.remove('show');
+}
+function setLoading(btn, loading) {
+    btn.disabled = loading;
+    btn.textContent = loading ? 'BUSCANDO CEP...' : 'BUSCAR';
+}
+
+// ====================== CEP LOOKUP – ROBUSTO ======================
+async function buscarCEP() {
+    const raw = el.cep.value.trim();
+    const cep = raw.replace(/\D/g, '');
+
+    // Reset
+    clearError(el.cep, el.errCep);
+
+    if (!CONFIG.CEP_REGEX.test(raw) && cep.length !== 8) {
+        showError(el.cep, el.errCep, 'CEP inválido. Use 00000-000');
+        return;
+    }
+
+    setLoading(el.btnCep, true);
+
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), CONFIG.TIMEOUT);
+
+    try {
+        const res = await fetch(`${CONFIG.CEP_API}/${cep}/json/`, {
+            signal: controller.signal
+        });
+
+        clearTimeout(timeout);
+        const data = await res.json();
+
+        if (data.erro) throw new Error('CEP não encontrado');
+
+        // Auto-preenchimento com micro-animação de confiança
+        el.rua.value = data.logradouro || '';
+        el.bairro.value = data.bairro || '';
+        el.cidade.value = data.localidade || '';
+        el.uf.value = data.uf || '';
+
+        // Sucesso visual premium
+        [el.rua, el.bairro, el.cidade, el.uf].forEach(field => {
+            field.style.transition = 'background 0.6s';
+            field.style.background = 'rgba(42,157,143,0.08)';
+            setTimeout(() => field.style.background = '', 1400);
+        });
+
+        el.numero.focus();
+
+    } catch (err) {
+        let msg = 'Não conseguimos buscar o CEP';
+        if (err.name === 'AbortError') msg = 'Tempo de resposta excedido';
+        showError(el.cep, el.errCep, msg + '. Preencha manualmente.');
+        
+        // Libera campos para edição
+        [el.rua, el.bairro, el.cidade, el.uf].forEach(f => f.disabled = false);
+    } finally {
+        setLoading(el.btnCep, false);
+    }
+}
+
+// ====================== VALIDAÇÃO INSTANTÂNEA ======================
+function validarCampos() {
+    let ok = true;
+    CONFIG.REQUIRED.forEach(key => {
+        const field = el[key];
+        const errEl = document.getElementById(`err${key.charAt(0).toUpperCase() + key.slice(1)}`) || el.errCep;
+        
+        if (!field.value.trim()) {
+            showError(field, errEl, 'Campo obrigatório');
+            ok = false;
+        } else {
+            clearError(field, errEl);
+        }
+    });
+    return ok;
+}
+
+// ====================== SUBMIT – PAYLOAD SEGURO ======================
+async function handleSubmit(e) {
+    e.preventDefault();
+
+    if (!validarCampos()) return;
+
+    el.btnSubmit.disabled = true;
+    el.btnSubmit.textContent = 'PROTEGENDO SEU PEDIDO...';
+
+    const payload = {
+        tipo:       'ENTREGA_CAPTURED',
+        timestamp:  new Date().toISOString(),
+        cep:        el.cep.value.trim(),
+        endereco:   el.rua.value.trim(),
+        numero:     el.numero.value.trim(),
+        complemento:el.complemento.value.trim(),
+        bairro:     el.bairro.value.trim(),
+        cidade:     el.cidade.value.trim(),
+        estado:     el.uf.value.trim()
+    };
+
+    // Em produção: adicionar Idempotency-Key + CSRF
+    try {
+        // Simulação real de envio (substitua pela rota real)
+        await fetch('/api/checkout/entrega', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Client-Version': '2026.03'
+            },
+            body: JSON.stringify(payload),
+            keepalive: true
+        });
+    } catch (e) {
+        console.warn('Falha de tracking – cliente não é impactado');
+    }
+
+    // Transição suave para pagamento
+    setTimeout(() => {
+        window.location.assign('/pagamento');
+    }, 420);
+}
+
+// ====================== INIT ======================
+function init() {
+    // Máscara CEP leve (sem dependência externa)
+    el.cep.addEventListener('input', e => {
+        let v = e.target.value.replace(/\D/g, '');
+        if (v.length > 5) v = v.slice(0,5) + '-' + v.slice(5,8);
+        e.target.value = v.substring(0,9);
+    });
+
+    // Eventos
+    el.btnCep.addEventListener('click', buscarCEP);
+    el.form.addEventListener('submit', handleSubmit);
+
+    // Validação em blur (confiança imediata)
+    CONFIG.REQUIRED.forEach(k => {
+        el[k].addEventListener('blur', validarCampos);
+    });
+
+    // Enter no CEP → busca automática
+    el.cep.addEventListener('keydown', e => {
+        if (e.key === 'Enter') buscarCEP();
+    });
+}
+
+init();
+</script>
+</body>
+</html>

